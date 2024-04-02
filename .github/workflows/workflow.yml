@@ -1,8 +1,8 @@
 name: Main workflow
 
 on:
-  - pull_request
   - push
+  - pull_request
 
 jobs:
   build:
@@ -10,13 +10,16 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Set-up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
 
       - name: Install shfmt
-        run: sudo snap install shfmt
+        run: brew install shellcheck shfmt
 
       - name: Run shfmt
         run: shfmt -d -i 2 -ci .
 
       - name: Run shellcheck
-        run: shellcheck ./src/*
+        run: shellcheck src/*
