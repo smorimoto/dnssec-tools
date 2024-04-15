@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Check if all authoritative servers for a TLD have removed DS records for your
 # domain, and that cached data at Google Public DNS has expired

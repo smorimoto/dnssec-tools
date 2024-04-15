@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Check if all authoritative servers for a domain are serving DNSSEC data
 
