@@ -1,25 +1,37 @@
-name: Main workflow
+name: CI
 
 on:
-  - push
-  - pull_request
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
 
 jobs:
-  build:
+  lint:
+    name: Lint shell scripts
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
+      - name: Checkout tree
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      - name: Set-up Homebrew
-        uses: Homebrew/actions/setup-homebrew@master
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@9af03b7ae3f9e2ae5c174f659d5c3909f7e7dbac # 2026.07.29.1
 
-      - name: Install shfmt
+      - name: Install shellcheck and shfmt
         run: brew install shellcheck shfmt
 
-      - name: Run shfmt
-        run: shfmt -d -i 2 -ci .
+      - parallel:
+          - name: Check formatting with shfmt
+            run: shfmt -d -i 2 -ci .
 
-      - name: Run shellcheck
-        run: shellcheck src/*
+          - name: Lint with shellcheck
+            run: shellcheck src/*
